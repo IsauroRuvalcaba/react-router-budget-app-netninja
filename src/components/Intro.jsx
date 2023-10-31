@@ -26,6 +26,8 @@ const Intro = () => {
             aria-label="Your Name"
             autoComplete="given-name"
           />
+          {/* this hidden input with name _action will allow us to figure out what to do based on value */}
+          <input type="hidden" name="_action" value="newUser" />
           <button type="submit" className="btn btn--dark">
             <span>Create Account</span>
             <UserPlusIcon width={20} />

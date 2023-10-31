@@ -2,7 +2,7 @@
 import { json, useLoaderData } from "react-router-dom";
 
 // helper functions
-import { fetchData } from "../helpers";
+import { createBudget, fetchData } from "../helpers";
 
 //comonent
 import Intro from "../components/Intro";
@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import AddBudgetForm from "../components/AddBudgetForm";
 
 // loader
+//? this function fetches data for a route before it is rendered. its in createBrowserRouter in app.js so its accessible from the element
 export function dashboardLoader() {
   const userName = fetchData("userName");
   const budgets = fetchData("budgets");
@@ -20,17 +21,32 @@ export function dashboardLoader() {
 //action
 export async function dashboardAction({ request }) {
   const data = await request.formData();
-  const formData = Object.fromEntries(data);
-  try {
-    localStorage.setItem("userName", JSON.stringify(formData.userName));
-    return toast.success(`Welcom, ${formData.userName}`);
-  } catch (e) {
-    throw new Error("There was a problem creating your account.");
+  const { _action, ...values } = Object.fromEntries(data);
+
+  // new user submission
+  if (_action === "newUser") {
+    try {
+      localStorage.setItem("userName", JSON.stringify(values.userName));
+      return toast.success(`Welcome, ${values.userName}`);
+    } catch (e) {
+      throw new Error("There was a problem creating your account.");
+    }
+  }
+
+  if (_action === "createBudget") {
+    try {
+      // create budget
+      createBudget({ name: values.newBudget, amount: values.newBudgetAmount });
+
+      return toast.success("Budget created!");
+    } catch (e) {
+      throw new Error("There was a problem creating your budget.");
+    }
   }
 }
 
 const Dashboard = () => {
-  const { userName, budgets } = useLoaderData();
+  const { userName, budgets } = useLoaderData(); // this is from the loader above
 
   return (
     <>
