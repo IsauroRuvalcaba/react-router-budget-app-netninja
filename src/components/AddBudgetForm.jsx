@@ -1,12 +1,31 @@
+import React, { useEffect, useRef } from "react";
 import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
-import React from "react";
-import { Form } from "react-router-dom";
+import { Form, useFetcher } from "react-router-dom";
 
 const AddBudgetForm = () => {
+  //this gives you access to actions and loaders without navigating
+  const fetcher = useFetcher();
+  //the below gives you the current state of the fetch. Used for variety of things
+  const isSubmitting = fetcher.state === "submitting";
+
+  //this links to
+  const formRef = useRef();
+
+  const focusRef = useRef();
+
+  useEffect(() => {
+    if (!isSubmitting) {
+      // this clears the create budget form
+      formRef.current.reset();
+      //this puts focus on newBudget input
+      focusRef.current.focus();
+    }
+  }, [isSubmitting]);
+
   return (
     <div className="form-wrapper">
       <h2 className="h3">Create budget</h2>
-      <Form method="post" className="grid-sm">
+      <fetcher.Form method="post" className="grid-sm" ref={formRef}>
         <div className="grid-xs">
           <label htmlFor="newBudget">Budget Name</label>
           {/* name is required for when submiting form */}
@@ -16,6 +35,7 @@ const AddBudgetForm = () => {
             id="newBudget"
             placeholder="e.g, Groceris"
             required
+            ref={focusRef}
           />
         </div>
         <div className="grid-xs">
@@ -32,11 +52,17 @@ const AddBudgetForm = () => {
         </div>
         {/* this hidden input with name _action will allow us to figure out what to do based on value */}
         <input type="hidden" name="_action" value="createBudget" />
-        <button type="submit" className="btn btn--dark">
-          <span>Create budget</span>
-          <CurrencyDollarIcon width={20} />
+        <button type="submit" className="btn btn--dark" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <span>Submitting budget...</span>
+          ) : (
+            <>
+              <span>Create budget</span>
+              <CurrencyDollarIcon width={20} />
+            </>
+          )}
         </button>
-      </Form>
+      </fetcher.Form>
     </div>
   );
 };
