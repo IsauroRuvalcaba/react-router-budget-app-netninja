@@ -1,5 +1,5 @@
 export const waait = () =>
-  new Promise((res) => setTimeout(res, Math.random() * 2000));
+  new Promise((res) => setTimeout(res, Math.random() * 800));
 
 const generateRandomColor = () => {
   const existingBudgetLength = fetchData("budgets")?.length ?? 0;
@@ -64,6 +64,9 @@ export const calculateSpentByBudget = (budgetId) => {
 };
 
 // Formatting
+
+export const formatDatetoLocaleString = (epoch) =>
+  new Date(epoch).toLocaleDateString();
 
 // Formatting percentages
 export const formatPercentage = (amt) => {

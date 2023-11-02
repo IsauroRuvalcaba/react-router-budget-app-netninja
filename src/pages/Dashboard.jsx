@@ -10,14 +10,16 @@ import { toast } from "react-toastify";
 import AddBudgetForm from "../components/AddBudgetForm";
 import AddExpenseForm from "../components/AddExpenseForm";
 import BudgetItem from "../components/BudgetItem";
+import Table from "../components/Table";
 
 // loader
 //? this function fetches data for a route before it is rendered. its in createBrowserRouter in app.js so its accessible from the element
 export function dashboardLoader() {
   const userName = fetchData("userName");
   const budgets = fetchData("budgets");
+  const expenses = fetchData("expenses");
 
-  return { userName, budgets };
+  return { userName, budgets, expenses };
 }
 
 //action
@@ -65,7 +67,7 @@ export async function dashboardAction({ request }) {
 }
 
 const Dashboard = () => {
-  const { userName, budgets } = useLoaderData(); // this is from the loader above
+  const { userName, budgets, expenses } = useLoaderData(); // this is from the loader above
 
   return (
     <>
@@ -87,6 +89,16 @@ const Dashboard = () => {
                     <BudgetItem key={budget.id} budget={budget} />
                   ))}
                 </div>
+                {expenses && expenses.length > 0 && (
+                  <div className="grid-md">
+                    <h2>Recent Expenses</h2>
+                    <Table
+                      expenses={expenses.sort(
+                        (a, b) => b.createdAt - a.createdAt
+                      )}
+                    />
+                  </div>
+                )}
               </div>
             ) : (
               <div className="grid-sm">
