@@ -3,7 +3,7 @@ export const waait = () =>
 
 const generateRandomColor = () => {
   const existingBudgetLength = fetchData("budgets")?.length ?? 0;
-  return `${existingBudgetLength * 34} 65% 50$`;
+  return `${existingBudgetLength * 34} 65% 50%`;
 };
 
 // Local storage
@@ -46,4 +46,37 @@ export const createExpense = ({ name, amount, budgetId }) => {
 //  delete item
 export const deleteItem = ({ key }) => {
   return localStorage.removeItem(key);
+};
+
+//total spent by budget
+export const calculateSpentByBudget = (budgetId) => {
+  const expenses = fetchData("expenses") ?? [];
+
+  //this is the formula I would like to use for personal App
+  const budgetSpent = expenses.reduce((acc, expense) => {
+    // check if expense.id === budgetId I passed in
+    if (expense.budgetId !== budgetId) return acc;
+
+    // add the current amount to my total
+    return (acc += expense.amount);
+  }, 0);
+  return budgetSpent;
+};
+
+// Formatting
+
+// Formatting percentages
+export const formatPercentage = (amt) => {
+  return amt.toLocaleString(undefined, {
+    style: "percent",
+    minimumFractionDigits: 0,
+  });
+};
+
+// Format currency
+export const formatCurrency = (amt) => {
+  return amt.toLocaleString(undefined, {
+    style: "currency",
+    currency: "USD",
+  });
 };

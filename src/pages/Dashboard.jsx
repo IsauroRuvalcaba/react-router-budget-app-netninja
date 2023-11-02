@@ -4,11 +4,12 @@ import { json, useLoaderData } from "react-router-dom";
 // helper functions
 import { createBudget, createExpense, fetchData, waait } from "../helpers";
 
-//comonent
+//component
 import Intro from "../components/Intro";
 import { toast } from "react-toastify";
 import AddBudgetForm from "../components/AddBudgetForm";
 import AddExpenseForm from "../components/AddExpenseForm";
+import BudgetItem from "../components/BudgetItem";
 
 // loader
 //? this function fetches data for a route before it is rendered. its in createBrowserRouter in app.js so its accessible from the element
@@ -79,6 +80,12 @@ const Dashboard = () => {
                 <div className="flex-lg">
                   <AddBudgetForm />
                   <AddExpenseForm budgets={budgets} />
+                </div>
+                <h2>Existing Budgets</h2>
+                <div className="budgets">
+                  {budgets.map((budget) => (
+                    <BudgetItem key={budget.id} budget={budget} />
+                  ))}
                 </div>
               </div>
             ) : (
