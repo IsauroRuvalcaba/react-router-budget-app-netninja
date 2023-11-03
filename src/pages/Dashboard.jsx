@@ -2,7 +2,13 @@
 import { Link, json, useLoaderData } from "react-router-dom";
 
 // helper functions
-import { createBudget, createExpense, fetchData, waait } from "../helpers";
+import {
+  createBudget,
+  createExpense,
+  deleteItem,
+  fetchData,
+  waait,
+} from "../helpers";
 
 //component
 import Intro from "../components/Intro";
@@ -28,6 +34,7 @@ export async function dashboardAction({ request }) {
 
   const data = await request.formData();
   const { _action, ...values } = Object.fromEntries(data);
+  //? request is the data past by the forms and all have ids that we named
 
   // new user submission
   if (_action === "newUser") {
@@ -62,6 +69,22 @@ export async function dashboardAction({ request }) {
       return toast.success(`Expense ${values.newExpense} created!`);
     } catch (e) {
       throw new Error("There was a problem creating your expense.");
+    }
+  }
+
+  //this goes to: in App.js->Dashboard->Table->ExpenseItem->fetcher.Form
+  //TODO this deleteExpense is from first <input type="hidden"
+  if (_action === "deleteExpense") {
+    try {
+      // helper function to delete single expense in
+      deleteItem({
+        key: "expenses",
+        id: values.expenseId, //TODO this is from second <input type="hidden"
+      });
+
+      return toast.success("Expense deleted!");
+    } catch (e) {
+      throw new Error("There was a problem deleting your expense.");
     }
   }
 }
